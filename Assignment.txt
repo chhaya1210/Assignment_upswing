@@ -1,0 +1,369 @@
+Scenarios:
+
+Modue name:User SignUp
+
+Positive Scenario: Sign up with Valid Details
+Steps:
+Enter a valid username.
+Enter a valid password.
+Click on the "Sign up" button.
+Expected Outcome: User is successfully registered, and a success message is displayed.
+
+Negative Scenario: Sign up with Invalid Details
+Preconditions: User is on the sign-up page.
+Steps:
+Enter an existing username or an invalid username.
+Enter an invalid or weak password.
+Click on the "Sign up" button.
+Expected Outcome: An error message is displayed, indicating the issue with the entered details.
+
+
+Modue name:User Login
+
+
+Positive Scenario: Log in with Valid Credentials
+Preconditions: User is on the login page.
+Steps:
+Enter a valid username.
+Enter a valid password.
+Click on the "Log in" button.
+Expected Outcome: User is successfully logged in and redirected to the homepage.
+
+Negative Scenario: Attempt to Log in with Invalid Credentials
+Preconditions: User is on the login page.
+Steps:
+Enter an invalid username.
+Enter an invalid password.
+Click on the "Log in" button.
+Expected Outcome: An error message is displayed, indicating invalid login credentials.
+
+
+Modue name:Product Browsing
+
+Verify Products are Displayed Correctly on the Homepage
+Preconditions: User is on the homepage.
+Steps:
+Load the homepage.
+Expected Outcome: All products are displayed correctly with images, names, and prices.
+Verify Product Categories can be Navigated Successfully
+Preconditions: User is on the homepage.
+Steps:
+Click on different product categories (e.g., Phones, Laptops, Monitors).
+Expected Outcome: The products within the selected category are displayed correctly.
+
+Modue name:Checkout Process
+
+Positive Scenario: Successfully Check the Items Added to the Cart
+Preconditions: User has added items to the cart.
+Steps:
+Navigate to the shopping cart page.
+Review the items in the cart.
+Click on "Place Order".
+Enter valid checkout details.
+Confirm the order.
+Expected Outcome: The order is successfully placed, and a confirmation message is displayed.
+
+Negative Scenario: Attempt to Checkout Without Adding Any Products to the Cart
+Preconditions: User has no items in the cart.
+Steps:
+Navigate to the shopping cart page.
+Attempt to checkout.
+Expected Outcome: An error message is displayed, indicating that the cart is empty.
+
+Modue name:Logout Process
+
+Positive Scenario: Successfully Log Out
+Preconditions: User is logged in.
+Steps:
+Click on the "Logout" button.
+Expected Outcome: User is successfully logged out and redirected to the homepage or login page.
+
+
+
+
+
+
+
+Code:
+
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.testng.Assert;
+import org.testng.annotations.AfterMethod;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Test;
+
+public class UserSignUpTest {
+    WebDriver driver;
+
+    @BeforeMethod
+    public void setUp() {
+        System.setProperty("webdriver.chrome.driver", "path/to/chromedriver");
+        driver = new ChromeDriver();
+        driver.manage().window().maximize();
+        driver.get("https://www.demoblaze.com/");
+    }
+
+    @Test
+    public void signUpWithValidDetails() {
+        driver.findElement(By.id("signin2")).click();
+        WebElement username = driver.findElement(By.id("sign-username"));
+        WebElement password = driver.findElement(By.id("sign-password"));
+        username.sendKeys("validUsername");
+        password.sendKeys("validPassword");
+        driver.findElement(By.xpath("//button[contains(text(),'Sign up')]")).click();
+        
+        // Add a wait for the alert
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        
+        String alertText = driver.switchTo().alert().getText();
+        Assert.assertEquals(alertText, "Sign up successful.");
+    }
+
+    @Test
+    public void signUpWithInvalidDetails() {
+        driver.findElement(By.id("signin2")).click();
+        WebElement username = driver.findElement(By.id("sign-username"));
+        WebElement password = driver.findElement(By.id("sign-password"));
+        username.sendKeys("");  // Invalid username
+        password.sendKeys("");  // Invalid password
+        driver.findElement(By.xpath("//button[contains(text(),'Sign up')]")).click();
+        
+        // Add a wait for the alert
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        
+        String alertText = driver.switchTo().alert().getText();
+        Assert.assertEquals(alertText, "Please fill out Username and Password.");
+    }
+
+    @AfterMethod
+    public void tearDown() {
+        if (driver != null) {
+            driver.quit();
+        }
+    }
+}
+UserLoginTest.java
+java
+Copy code
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.testng.Assert;
+import org.testng.annotations.AfterMethod;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Test;
+
+public class UserLoginTest {
+    WebDriver driver;
+
+    @BeforeMethod
+    public void setUp() {
+        System.setProperty("webdriver.chrome.driver", "path/to/chromedriver");
+        driver = new ChromeDriver();
+        driver.manage().window().maximize();
+        driver.get("https://www.demoblaze.com/");
+    }
+
+    @Test
+    public void loginWithValidCredentials() {
+        driver.findElement(By.id("login2")).click();
+        WebElement username = driver.findElement(By.id("loginusername"));
+        WebElement password = driver.findElement(By.id("loginpassword"));
+        username.sendKeys("validUsername");
+        password.sendKeys("validPassword");
+        driver.findElement(By.xpath("//button[contains(text(),'Log in')]")).click();
+        
+        // Add a wait for the page to load
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        
+        WebElement welcomeMessage = driver.findElement(By.id("nameofuser"));
+        Assert.assertTrue(welcomeMessage.isDisplayed());
+    }
+
+    @Test
+    public void loginWithInvalidCredentials() {
+        driver.findElement(By.id("login2")).click();
+        WebElement username = driver.findElement(By.id("loginusername"));
+        WebElement password = driver.findElement(By.id("loginpassword"));
+        username.sendKeys("invalidUsername");
+        password.sendKeys("invalidPassword");
+        driver.findElement(By.xpath("//button[contains(text(),'Log in')]")).click();
+        
+        // Add a wait for the alert
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        
+        String alertText = driver.switchTo().alert().getText();
+        Assert.assertEquals(alertText, "User does not exist.");
+    }
+
+    @AfterMethod
+    public void tearDown() {
+        if (driver != null) {
+            driver.quit();
+        }
+    }
+}
+ProductBrowsingTest.java
+java
+Copy code
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.testng.Assert;
+import org.testng.annotations.AfterMethod;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Test;
+
+import java.util.List;
+
+public class ProductBrowsingTest {
+    WebDriver driver;
+
+    @BeforeMethod
+    public void setUp() {
+        System.setProperty("webdriver.chrome.driver", "path/to/chromedriver");
+        driver = new ChromeDriver();
+        driver.manage().window().maximize();
+        driver.get("https://www.demoblaze.com/");
+    }
+
+    @Test
+    public void verifyProductsDisplayedOnHomepage() {
+        List<WebElement> products = driver.findElements(By.cssSelector(".card-title a"));
+        Assert.assertTrue(products.size() > 0);
+    }
+
+    @Test
+    public void verifyProductCategoriesNavigation() {
+        String[] categories = {"Phones", "Laptops", "Monitors"};
+        for (String category : categories) {
+            driver.findElement(By.linkText(category)).click();
+            List<WebElement> products = driver.findElements(By.cssSelector(".card-title a"));
+            Assert.assertTrue(products.size() > 0);
+        }
+    }
+
+    @AfterMethod
+    public void tearDown() {
+        if (driver != null) {
+            driver.quit();
+        }
+    }
+}
+AddToCartTest.java
+java
+Copy code
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.testng.Assert;
+import org.testng.annotations.AfterMethod;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Test;
+
+import java.util.List;
+
+public class AddToCartTest {
+    WebDriver driver;
+
+    @BeforeMethod
+    public void setUp() {
+        System.setProperty("webdriver.chrome.driver", "path/to/chromedriver");
+        driver = new ChromeDriver();
+        driver.manage().window().maximize();
+        driver.get("https://www.demoblaze.com/");
+    }
+
+    @Test
+    public void addLastProductToCart() {
+        while (true) {
+            try {
+                WebElement nextButton = driver.findElement(By.id("next2"));
+                nextButton.click();
+                Thread.sleep(1000);  // Adding a small wait for the next page to load
+            } catch (Exception e) {
+                break;  // Break the loop when the next button is not found
+            }
+        }
+        
+        List<WebElement> products = driver.findElements(By.cssSelector(".card-title a"));
+        WebElement lastProduct = products.get(products.size() - 1);
+        lastProduct.click();
+        
+        driver.findElement(By.xpath("//a[contains(text(),'Add to cart')]")).click();
+        
+        // Add a wait for the alert
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        
+        String alertText = driver.switchTo().alert().getText();
+        Assert.assertEquals(alertText, "Product added.");
+    }
+
+    @AfterMethod
+    public void tearDown() {
+        if (driver != null) {
+            driver.quit();
+        }
+    }
+}
+CheckoutProcessTest.java
+java
+Copy code
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.testng.Assert;
+import org.testng.annotations.AfterMethod;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Test;
+
+public class CheckoutProcessTest {
+    WebDriver driver;
+
+    @BeforeMethod
+    public void setUp() {
+        System.setProperty("webdriver.chrome.driver", "path/to/chromedriver");
+        driver = new ChromeDriver();
+        driver.manage().window().maximize();
+        driver.get("https://www.demoblaze.com/");
+    }
+
+    @Test
+    public void successfulCheckout() {
+        driver.findElement(By.id("cartur")).click();
+        driver.findElement(By.xpath("//button[contains(text(),'Place Order')]")).click();
+        driver.findElement(By.id("name")).sendKeys("Test User");
+        driver.findElement(By.id("country")).sendKeys("Test Country");
+        driver.findElement(By.id("city")).sendKeys("Test City");
+        driver.findElement(By.id("card")).sendKeys("1234567890123456");
+
+
+
+
